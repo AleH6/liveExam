@@ -5,10 +5,6 @@ var path = require("path");
 var index_1 = require("./routes/index");
 var app = express();
 var dev = app.get('env') === 'development' ? true : false;
-if (dev) {
-    var dotenv = require('dotenv');
-    dotenv.load();
-}
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));

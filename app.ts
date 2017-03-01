@@ -17,12 +17,6 @@ let app = express();
 // optional for security
 const dev = app.get('env') === 'development' ? true : false;
 
-// optional
-if (dev) {
-  let dotenv = require('dotenv');
-  dotenv.load();
-}
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
