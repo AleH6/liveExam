@@ -3,6 +3,9 @@ import * as bodyParser from 'body-parser';
 import * as ejs from 'ejs';
 import * as path from 'path';
 import * as mongoose from 'mongoose';
+import {Boxer} from './models/Boxers';
+import boxerApi from './api/boxers';
+
 
 declare var __dirname;
 declare var require;
@@ -22,7 +25,19 @@ if (dev) {
   let dotenv = require('dotenv');
   dotenv.load();
 }
+mongoose.connect(process.env.MONGO_URI);
 
+mongoose.connection.on("connected", () => {
+  //seed data here
+  Boxer.create({
+    name: "dog",
+    age: 3,
+    weight: 400
+  })
+})
+mongoose.connection.on("error", (e) => {
+  console.log(e);
+})
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -38,6 +53,7 @@ app.use('/ngApp', express.static(path.join(__dirname, 'ngApp')));
 
 // a server route
 app.use('/', routes);
+app.use('/api', boxerApi);
 
 // redirect 404 to home for the sake of AngularJS client-side routes
 app.get('/*', function(req, res, next) {

@@ -2,6 +2,9 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var path = require("path");
+var mongoose = require("mongoose");
+var Boxers_1 = require("./models/Boxers");
+var boxers_1 = require("./api/boxers");
 var index_1 = require("./routes/index");
 var app = express();
 var dev = app.get('env') === 'development' ? true : false;
@@ -9,6 +12,17 @@ if (dev) {
     var dotenv = require('dotenv');
     dotenv.load();
 }
+mongoose.connect(process.env.MONGO_URI);
+mongoose.connection.on("connected", function () {
+    Boxers_1.Boxer.create({
+        name: "dog",
+        age: 3,
+        weight: 400
+    });
+});
+mongoose.connection.on("error", function (e) {
+    console.log(e);
+});
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,6 +31,7 @@ app.use('/bower_components', express.static(path.join(__dirname, 'bower_componen
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 app.use('/ngApp', express.static(path.join(__dirname, 'ngApp')));
 app.use('/', index_1.default);
+app.use('/api', boxers_1.default);
 app.get('/*', function (req, res, next) {
     if (/.js|.html|.css|templates|js|scripts/.test(req.path) || req.xhr) {
         return next({ status: 404, message: 'Not Found' });
